@@ -100,7 +100,7 @@ fun MyApp() {
             }
     }
 
-    val loadBoard = {
+    val loadBoard : () -> Unit = {
         db.collection("community").get()
             .addOnSuccessListener {
                 boardList.value = it.toObjects<Board>()
@@ -111,28 +111,24 @@ fun MyApp() {
 
     Surface {
         Scaffold(
-            topBar = { AppBar() }
+            topBar = { AppBar() },
         ) {
-            Column(modifier = Modifier.padding(it)) {
-                Button(onClick = { loadBoard() }) {
-                    Text(text = "새로 고침")
+            NavHost(
+                modifier = Modifier.padding(it),
+                navController = navController,
+                startDestination = Screne.Main.name
+            ) {
+                composable(route = Screne.Main.name) {
+                    MainScreen(navController, boardList.value, loadBoard)
                 }
-                NavHost(
-                    navController = navController,
-                    startDestination = Screne.Main.name
-                ) {
-                    composable(route = Screne.Main.name) {
-                        MainScreen(navController, boardList.value)
+                composable(route = Screne.Write.name) {
+                    WriteScreen(navController, onSubmit)
+                }
+                composable(route = Screne.Detail.name) {
+                    val data = remember {
+                        navController.previousBackStackEntry?.savedStateHandle?.get<Board>("board")
                     }
-                    composable(route = Screne.Write.name) {
-                        WriteScreen(navController, onSubmit)
-                    }
-                    composable(route = Screne.Detail.name) {
-                        val data = remember {
-                            navController.previousBackStackEntry?.savedStateHandle?.get<Board>("board")
-                        }
-                        DetailScreen(navController, data!!, onDelete)
-                    }
+                    DetailScreen(navController, data!!, onDelete)
                 }
             }
         }

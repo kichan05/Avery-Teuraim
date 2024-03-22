@@ -24,10 +24,13 @@ import dev.kichan.composecomunity.ui.theme.ComposeComunityTheme
 
 
 @Composable
-fun MainScreen(navController: NavController, boardList: List<Board>) {
+fun MainScreen(navController: NavController, boardList: List<Board>, loadBoard : () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
+        Button(onClick = { loadBoard() }) {
+            Text(text = "새로 고침")
+        }
         LazyColumn(
             modifier = Modifier
                 .weight(1F)
@@ -111,6 +114,6 @@ fun MainScreenPreview() {
     }
 
     ComposeComunityTheme {
-        MainScreen(rememberNavController(), boardList)
+        MainScreen(rememberNavController(), boardList, {})
     }
 }

@@ -1,5 +1,7 @@
 package dev.kichan.composecomunity
 
+import java.time.LocalDateTime
+import java.util.Date
 import kotlin.random.Random
 
 fun randomHash(STRING_LENGTH : Int = 10) : String {
