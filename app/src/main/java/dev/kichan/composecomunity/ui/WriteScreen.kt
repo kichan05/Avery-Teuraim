@@ -15,6 +15,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -30,6 +32,7 @@ fun WriteScreen(
     val context = LocalContext.current
     var title by rememberSaveable { mutableStateOf("") }
     var content by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -37,13 +40,21 @@ fun WriteScreen(
         TextField(
             value = title, onValueChange = { title = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = "제목") }
+            placeholder = { Text(text = "제목") },
+            singleLine = true
         )
         TextField(
             value = content, onValueChange = { content = it },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(text = "내용") },
             minLines = 10
+        )
+        TextField(
+            value = password, onValueChange = { password = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(text = "비밀번호") },
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation()
         )
         Box(modifier = Modifier.weight(1F))
         Button(
@@ -56,7 +67,7 @@ fun WriteScreen(
                     title = title,
                     content = content,
                     writer = "박희찬",
-                    password = "0213"
+                    password = password,
                 )
                 onSubmit(
                     data,
