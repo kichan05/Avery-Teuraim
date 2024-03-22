@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dev.kichan.composecomunity.Screne
+import dev.kichan.composecomunity.Screen
 import dev.kichan.composecomunity.model.data.Board
 import dev.kichan.composecomunity.ui.theme.ComposeComunityTheme
 
@@ -64,7 +64,7 @@ fun WriteScreen(
                         title = ""
                         content = ""
                         Toast.makeText(context, "작성완료", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screne.Main.name)
+                        navController.navigate(Screen.Main.name)
                     },
                     {
                         Toast.makeText(context, "작성실패", Toast.LENGTH_SHORT).show()

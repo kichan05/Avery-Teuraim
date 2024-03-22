@@ -5,11 +5,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,6 +32,7 @@ import dev.kichan.composecomunity.model.data.Board
 import dev.kichan.composecomunity.ui.MainScreen
 import dev.kichan.composecomunity.ui.WriteScreen
 import dev.kichan.composecomunity.ui.DetailScreen
+import dev.kichan.composecomunity.ui.EditScreen
 import dev.kichan.composecomunity.ui.theme.ComposeComunityTheme
 
 class MainActivity : ComponentActivity() {
@@ -93,7 +92,18 @@ fun MyApp() {
         db.collection("community").document(it.id).delete()
             .addOnSuccessListener {
                 Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show()
-                navController.navigate(Screne.Main.name)
+                navController.navigate(Screen.Main.name)
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "실패", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    val onUpdate : (Board) -> Unit = {
+        db.collection("community").document(it.id).set(it)
+            .addOnSuccessListener {
+                Toast.makeText(context, "수정 완료", Toast.LENGTH_SHORT).show()
+                navController.navigate(Screen.Main.name)
             }
             .addOnFailureListener {
                 Toast.makeText(context, "실패", Toast.LENGTH_SHORT).show()
@@ -116,22 +126,28 @@ fun MyApp() {
             NavHost(
                 modifier = Modifier.padding(it),
                 navController = navController,
-                startDestination = Screne.Main.name
+                startDestination = Screen.Main.name
             ) {
-                composable(route = Screne.Main.name) {
+                composable(route = Screen.Main.name) {
                     MainScreen(navController, boardList.value, loadBoard)
                 }
-                composable(route = Screne.Write.name) {
+                composable(route = Screen.Write.name) {
                     WriteScreen(navController, onSubmit)
                 }
-                composable(route = Screne.Detail.name) {
+                composable(route = Screen.Detail.name) {
                     val data = remember {
                         navController.previousBackStackEntry?.savedStateHandle?.get<Board>("board")
-                    }
-                    DetailScreen(navController, data!!, onDelete)
+                    }!!
+                    DetailScreen(navController, data, onDelete)
+                }
+                composable(route = Screen.Edit.name) {
+                    val data = remember {
+                        navController.previousBackStackEntry?.savedStateHandle?.get<Board>("board")
+                    }!!
+                    EditScreen(data, onUpdate)
                 }
             }
         }
-
     }
 }
+

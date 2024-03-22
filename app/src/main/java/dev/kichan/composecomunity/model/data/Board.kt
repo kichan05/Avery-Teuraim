@@ -16,6 +16,7 @@ data class Board(
 ) : Serializable {
     companion object {
         val default = Board(
+        "asjasjkajsjkf",
         "대충 제목",
         "대충 내용 대충 내용 대충 내용 대충 내용 대충 내용 대충 내용 대충 내용 ",
         "박키찬희찬",

@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dev.kichan.composecomunity.Screne
+import dev.kichan.composecomunity.Screen
 import dev.kichan.composecomunity.model.data.Board
 import dev.kichan.composecomunity.ui.theme.ComposeComunityTheme
 
@@ -43,7 +43,7 @@ fun MainScreen(navController: NavController, boardList: List<Board>, loadBoard :
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                navController.navigate(Screne.Write.name)
+                navController.navigate(Screen.Write.name)
             }
         ) {
             Text(text = "글쓰기")
@@ -60,7 +60,7 @@ fun BoardItem(board: Board, navController: NavController) {
             .clickable {
                 navController.apply {
                     currentBackStackEntry?.savedStateHandle?.set("board", board)
-                    navigate(Screne.Detail.name)
+                    navigate(Screen.Detail.name)
                 }
             }
     ) {

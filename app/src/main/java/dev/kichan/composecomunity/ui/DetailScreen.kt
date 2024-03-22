@@ -22,6 +22,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import dev.kichan.composecomunity.Screen
 import dev.kichan.composecomunity.model.data.Board
 import dev.kichan.composecomunity.ui.theme.ComposeComunityTheme
 
@@ -67,7 +68,12 @@ fun DetailScreen(navController: NavController, board: Board, onDelete: (board: B
 
         Row {
             Button(
-                onClick = { }, modifier = Modifier.weight(1F)
+                onClick = {
+                    navController.apply {
+                        currentBackStackEntry?.savedStateHandle?.set("board", board)
+                        navigate(Screen.Edit.name)
+                    }
+                }, modifier = Modifier.weight(1F)
             ) {
                 Text(text = "수정")
             }
@@ -90,7 +96,7 @@ fun CheckDialog(
     onNoClick: () -> Unit,
 ) {
     Dialog(
-        onDismissRequest = {  },
+        onDismissRequest = { },
         DialogProperties(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,
@@ -100,7 +106,9 @@ fun CheckDialog(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
         ) {
-            Column {
+            Column(
+                modifier = Modifier.padding(4.dp)
+            ) {
                 Text(
                     text = "Hello World",
                     modifier = Modifier

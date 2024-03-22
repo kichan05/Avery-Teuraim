@@ -1,7 +1,8 @@
 package dev.kichan.composecomunity
 
-enum class Screne {
+enum class Screen {
     Main,
     Write,
     Detail,
+    Edit,
 }
