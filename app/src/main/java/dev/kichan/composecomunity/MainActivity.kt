@@ -1,12 +1,15 @@
 package dev.kichan.composecomunity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -68,6 +71,7 @@ fun AppBar() {
 
 @Composable
 fun MyApp() {
+    val navController = rememberNavController()
     val context = LocalContext.current
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -85,33 +89,50 @@ fun MyApp() {
             }
     }
 
-    db.collection("community").get()
-        .addOnSuccessListener {
-            boardList.value = boardList.value + it.toObjects<Board>()
-        }
+    val onDelete: (Board) -> Unit = {
+        db.collection("community").document(it.id).delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show()
+                navController.navigate(Screne.Main.name)
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "실패", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    val loadBoard = {
+        db.collection("community").get()
+            .addOnSuccessListener {
+                boardList.value = it.toObjects<Board>()
+            }
+    }
+
+    loadBoard()
 
     Surface {
-        val navController = rememberNavController()
-
         Scaffold(
             topBar = { AppBar() }
         ) {
-            NavHost(
-                modifier = Modifier.padding(it),
-                navController = navController,
-                startDestination = Screne.Main.name
-            ) {
-                composable(route = Screne.Main.name) {
-                    MainScreen(navController, boardList.value)
+            Column(modifier = Modifier.padding(it)) {
+                Button(onClick = { loadBoard() }) {
+                    Text(text = "새로 고침")
                 }
-                composable(route = Screne.Write.name) {
-                    WriteScreen(navController, onSubmit)
-                }
-                composable(route = Screne.Detail.name) {
-                    val data = remember {
-                        navController.previousBackStackEntry?.savedStateHandle?.get<Board>("board")
+                NavHost(
+                    navController = navController,
+                    startDestination = Screne.Main.name
+                ) {
+                    composable(route = Screne.Main.name) {
+                        MainScreen(navController, boardList.value)
                     }
-                    DetailScreen(navController, data!!)
+                    composable(route = Screne.Write.name) {
+                        WriteScreen(navController, onSubmit)
+                    }
+                    composable(route = Screne.Detail.name) {
+                        val data = remember {
+                            navController.previousBackStackEntry?.savedStateHandle?.get<Board>("board")
+                        }
+                        DetailScreen(navController, data!!, onDelete)
+                    }
                 }
             }
         }
